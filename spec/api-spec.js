@@ -20,7 +20,7 @@ describe('API', () => {
                 })
                 .catch(err => {
                     throw(err);
-                })
+                });
         });
     });
 });

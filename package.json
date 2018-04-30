@@ -2,10 +2,10 @@
   "name": "spotlite-2fa-api",
   "version": "1.0.0",
   "description": "Spotlite 2FA Backend",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "test": "NODE_ENV=test mocha ./spec",
-    "dev": "NODE_ENV=dev nodemon ./server.js",
+    "dev": "NODE_ENV=dev nodemon ./app.js",
     "lint": "eslint ./",
     "posttest": "npm run lint",
     "seed:production": "NODE_ENV=production node seed/seed.js",
