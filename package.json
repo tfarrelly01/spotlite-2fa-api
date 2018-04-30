@@ -1,0 +1,45 @@
+{
+  "name": "spotlite-2fa-api",
+  "version": "1.0.0",
+  "description": "Spotlite 2FA Backend",
+  "main": "server.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha ./spec",
+    "dev": "NODE_ENV=dev nodemon ./server.js",
+    "lint": "eslint ./",
+    "posttest": "npm run lint",
+    "precommit": "npm test",
+    "seed:production": "NODE_ENV=production node seed/seed.js",
+    "seed:dev": "NODE_ENV=dev node seed/seed.js",
+    "seed:test": "NODE_ENV=test node seed/test.seed.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tfarrelly01/spotlite-2fa-api.git"
+  },
+  "author": "Tony Farrelly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tfarrelly01/spotlite-2fa-api/issues"
+  },
+  "homepage": "https://github.com/tfarrelly01/spotlite-2fa-api#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "husky": "^0.14.3",
+    "lint": "^1.1.2",
+    "mocha": "^5.1.1",
+    "supertest": "^3.0.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.1",
+    "morgan": "^1.9.0",
+    "twilio": "^3.16.0"
+  }
+}
