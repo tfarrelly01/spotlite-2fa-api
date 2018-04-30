@@ -8,6 +8,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const path = require('path');
 const express = require('express');
+const session = require('express-session');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -23,6 +24,13 @@ app.use(bodyParser.json());
 
 // use cors so that front end application can access this api
 app.use(cors());
+
+app.use(session({
+    secret: 'keyboard dog',
+    resave: true,
+    saveUninitialized: true,
+    truecookie: { maxAge: 60 * 60 * 1000 }
+}));
 
 app.get('/', function(req, res) {
     res.status(200).send('All good!');
