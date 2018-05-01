@@ -17,6 +17,9 @@ const router = require('./router/index');
 
 const { PORT } = process.env;
 
+console.log('process.env::', process.env);
+const cmsDB = require('./db/db');
+
 app.use(morgan('dev'));
 
 // express middleware
@@ -30,7 +33,7 @@ app.use(session({
     resave: true,
     saveUninitialized: true,
     truecookie: { maxAge: 60 * 60 * 1000 }
-}));
+})); 
 
 app.get('/', function(req, res) {
     res.status(200).send('All good!');
@@ -59,3 +62,4 @@ app.use(function (err, req, res, next) {
 });
 
 module.exports = app;
+
