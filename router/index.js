@@ -4,27 +4,55 @@ const router  = express.Router();
 const {getPinCode} = require('../controllers/getPinCode');
 const {getApplicant} = require('../controllers/getApplicant');
 
-router.get('/newroute', (req, res, next) => {
-    res.status(200).send('This is a new ROUTE!');
-});
-
-router.get('/verify', (req, res, next) => {
-    const newPin = getPinCode();
-    return res.status(200).json({newPin});
-});
-
 router.get('/applicant', (req, res, next) => {
-    getApplicant(1)
-        .then(data => {
-            console.log('data::', data);
-            return res.status(200).json({data});
-        })
-        .catch(err => {
-            console.log('ERROR::', err);
-            return res.json({err});
+	const applicantEmail = req.query.ContactEmail;
 
-        })
+	getApplicant(applicantEmail)
+		.then(applicant => {
+				if (applicant instanceof Error) {
+		//			console.log('applicant::', applicant);
+						throw applicant;
+				} else {
+						// get new pin code
+						applicant.pinCode = getPinCode();
+						console.log('applicant::', applicant);
 
+						// create user session (user data including pin number)
+						req.session.applicant = applicant;
+
+						// TEXT PIN CODE HERE !!!
+
+						// send back response object
+						return res.status(200).json({applicant});
+				}
+		})
+		.catch(err => {
+			console.log('ERROR THROWN:', err);
+				return res.status(500).json({err});
+		})
+});
+
+router.get('/newpin', (req, res, next) => {
+	if (req.session.applicant) {
+		// user requests a new pin for whatever reason
+		req.session.applicant.pinCode = getPinCode();
+
+		// TEXT PIN CODE HERE !!!
+		
+		const applicant = req.session.applicant;
+		return res.status(200).json({applicant});
+	} else {
+		res.json({error: 'Time to complete the registration process has expired. or has not started. Please click on the link in the registration email.'});
+	}
+});
+
+router.get('/reset', (req, res, next) => {
+	if (req.session.applicant) {
+		delete req.session.applicant;
+		return res.status(200).json({message: 'Session deleted!'});
+	} else {
+		res.json({error: 'Registration process not started.'});		
+	}
 });
 
 module.exports = router;

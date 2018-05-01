@@ -17,7 +17,6 @@ const router = require('./router/index');
 
 const { PORT } = process.env;
 
-console.log('process.env::', process.env);
 const cmsDB = require('./db/db');
 
 app.use(morgan('dev'));
