@@ -3,6 +3,7 @@ const router  = express.Router();
 
 const {getPinCode} = require('../controllers/getPinCode');
 const {getApplicant} = require('../controllers/getApplicant');
+const {sendSMS} = require('../utils/sendSMS');
 
 router.get('/applicant', (req, res, next) => {
 	const applicantEmail = req.query.ContactEmail;
@@ -21,6 +22,7 @@ router.get('/applicant', (req, res, next) => {
 					req.session.applicant = applicant;
 
 					// TEXT PIN CODE HERE !!!
+					sendSMS(applicant.pinCode);
 
 					// send back response object
 					return res.status(200).json({applicant});
