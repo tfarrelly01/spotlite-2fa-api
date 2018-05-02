@@ -4,6 +4,7 @@ const router  = express.Router();
 
 const {getPinCode} = require('../controllers/getPinCode');
 const {getApplicant} = require('../controllers/getApplicant');
+const {postApplicant} = require('../controllers/postApplicant');
 const {sendSMS} = require('../utils/sendSMS');
 
 router.post('/applicant', (req, res, next) => {
@@ -16,6 +17,7 @@ router.post('/applicant', (req, res, next) => {
 			} else {
 				// get new pin code
 				let pinCode = getPinCode();
+console.log('Verification Code::', pinCode);
 
 				// store phone number in applicant response object
 				applicant.phoneNumber = phoneNumber;
@@ -34,7 +36,7 @@ router.post('/applicant', (req, res, next) => {
 		.catch(err => {
 			let error;
 			err.message ? error = err.message : error = err; 
-			return res.status(500).json({error});
+			return res.json({error});
 		})
 });
 
@@ -56,20 +58,36 @@ router.get('/newpin', (req, res, next) => {
 	
 	req.session.applicant.pinCode = pinCode;
 
-	return res.status(200).json({message: 'New Pin Number generated'});
+	return res.status(200).json({message: 'New verification code generated'});
 });
 
-router.post('/verified', (req, res, next) => {
+router.post('/verify', (req, res, next) => {
 	// if verified then update applicant record (address, mobile phone and registered/verified = true)
 	// else throw error 
 	const options = req.body;
 
-	return res.status(200).json({message: 'New Route'});
+	if (req.session.applicant.pinCode != options.pinCode) {
+		return res.json({error: 'Verification code input does not match!'})
+	}
+
+	postApplicant(req.session.applicant.ApplicantId, options) 
+		.then((applicant) => {
+			if (applicant instanceof Error) {
+				throw applicant;
+			} else {
+				// Do we send a success text via SMS??
+				// sendSMS(pinCode, phoneNumber);
+
+				return res.status(200).json({applicant});
+			}
+		})
+		.catch(error => res.json({Error}));
+
 })
 
-router.get('/reset', (req, res, next) => {
+router.get('/verified', (req, res, next) => {
 	delete req.session.applicant;
-	return res.status(200).json({message: 'Session deleted!'});
+	return res.status(200).json({message: 'Applicant verified!'});
 });
 
 module.exports = router;
