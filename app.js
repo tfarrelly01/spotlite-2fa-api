@@ -31,7 +31,7 @@ app.use(session({
     secret: 'keyboard dog',
     resave: true,
     saveUninitialized: true,
-    truecookie: { maxAge: 60 * 60 * 1000 }
+    truecookie: { maxAge: 20 * 60 * 1000 }
 })); 
 
 app.get('/', function(req, res) {
