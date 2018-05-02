@@ -9,26 +9,27 @@ router.get('/applicant', (req, res, next) => {
 
 	getApplicant(applicantEmail)
 		.then(applicant => {
-				if (applicant instanceof Error) {
-		//			console.log('applicant::', applicant);
-						throw applicant;
-				} else {
-						// get new pin code
-						applicant.pinCode = getPinCode();
-						console.log('applicant::', applicant);
+			if (applicant instanceof Error) {
+	//			console.log('applicant::', applicant);
+					throw applicant;
+			} else {
+					// get new pin code
+					applicant.pinCode = getPinCode();
+					console.log('applicant::', applicant);
 
-						// create user session (user data including pin number)
-						req.session.applicant = applicant;
+					// create user session (user data including pin number)
+					req.session.applicant = applicant;
 
-						// TEXT PIN CODE HERE !!!
+					// TEXT PIN CODE HERE !!!
 
-						// send back response object
-						return res.status(200).json({applicant});
-				}
+					// send back response object
+					return res.status(200).json({applicant});
+			}
 		})
 		.catch(err => {
-			console.log('ERROR THROWN:', err);
-				return res.status(500).json({err});
+			let error;
+			err.message ? error = err.message : error = err; 
+			return res.status(500).json({error});
 		})
 });
 
@@ -45,6 +46,12 @@ router.get('/newpin', (req, res, next) => {
 		res.json({error: 'Time to complete the registration process has expired. or has not started. Please click on the link in the registration email.'});
 	}
 });
+
+router.post('/verified', (req, res, next) => {
+	// here check applicant and pin number match req.body
+	// if verified then update applicant record (address, mobile phone and registered/verified = true)
+	// else throw error 
+})
 
 router.get('/reset', (req, res, next) => {
 	if (req.session.applicant) {
