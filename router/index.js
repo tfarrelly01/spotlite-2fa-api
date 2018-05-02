@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router  = express.Router();
 
@@ -14,19 +15,19 @@ router.post('/applicant', (req, res, next) => {
 				throw applicant;
 			} else {
 				// get new pin code
-				applicant.pinCode = getPinCode();
+				let pinCode = getPinCode();
+
+				// store phone number in applicant response object
 				applicant.phoneNumber = phoneNumber;
 
-				// create user session (user data including pin number)
-				req.session.applicant = applicant;
+				// create session (applicant data including pin number)
+				req.session.applicant = {...applicant};
+				req.session.applicant.pinCode = pinCode;
 
-				console.log('req.session.id:', req.session.id);
-				console.log('req.session::', req.session);
+				// Send pin code via SMS
+				// sendSMS(pinCode, phoneNumber);
 
-				// TEXT PIN CODE HERE !!!
-				// sendSMS(applicant.pinCode, phoneNumber);
-
-				// send back response object
+				// send back response object WITHOUT pin code
 				return res.status(200).json({applicant});
 			}
 		})
@@ -46,20 +47,23 @@ router.use((req, res, next) => {
 });
 
 router.get('/newpin', (req, res, next) => {
+	const {phoneNumber} = req.body;
 	// user requests a new pin for whatever reason
-	req.session.applicant.pinCode = getPinCode();
+	let pinCode = getPinCode();
 
 	// TEXT PIN CODE HERE !!!
-	// sendSMS(req.session.applicant.pinCode, req.session.applicant.phoneNumber);
+	// sendSMS(pinCode, phoneNumber);
 	
-	const applicant = req.session.applicant;
-	return res.status(200).json({applicant});
+	req.session.applicant.pinCode = pinCode;
+
+	return res.status(200).json({message: 'New Pin Number generated'});
 });
 
 router.post('/verified', (req, res, next) => {
-	// here check applicant and pin number match req.body
 	// if verified then update applicant record (address, mobile phone and registered/verified = true)
 	// else throw error 
+	const options = req.body;
+
 	return res.status(200).json({message: 'New Route'});
 })
 

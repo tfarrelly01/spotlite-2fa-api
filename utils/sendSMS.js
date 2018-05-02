@@ -8,13 +8,15 @@ if (process.env.NODE_ENV !== 'production') {
 
 const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_NUMBER } = process.env;
 const client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+
 const minutesToCompleteRegistration = '20';
 
 exports.sendSMS = (pinCode, phoneNumber) => {
+    const textBody = 'Your Spotlite Registration pin code is ' + pinCode + 
+    '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes';
     client.messages
     .create({
-        body: 'Your Spotlite Registration pin code is ' + pinCode + 
-            '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes',
+        body: textBody,
         from: TWILIO_NUMBER,
         to: phoneNumber
     })
