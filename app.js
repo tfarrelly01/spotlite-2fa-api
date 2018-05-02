@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = 'dev';
+  process.env.NODE_ENV = 'dev';
 }
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config({path: `./.${process.env.NODE_ENV}.env`});
+  require('dotenv').config({path: `./.${process.env.NODE_ENV}.env`});
 }
 
 const path = require('path');
@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const router = require('./router/index');
+const uuidv1 = require('uuid/v1');
 
 const { PORT } = process.env;
 
@@ -28,29 +29,29 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(session({
-    secret: 'keyboard dog',
-    resave: true,
-    saveUninitialized: true,
-    truecookie: { maxAge: 20 * 60 * 1000 }
+	secret: 'keyboard dog',
+	resave: true,
+	saveUninitialized: true,
+	truecookie: { maxAge: 20 * 60 * 1000 }
 })); 
 
 app.get('/', function(req, res) {
-    res.status(200).send('All good!');
+	res.status(200).send('All good!');
  //   res.sendFile(path.join(__dirname + '/index.html'));  
 });
 
 app.use('/home', router);
 
 app.listen(PORT, function() {
-    console.log(`listening on port ${PORT}`);
+	console.log(`listening on port ${PORT}`);
 });
 
 // sure of error
 app.use(function(err, req, res, next) {
-    if (err.status) {
-        return res.status(err.status).json({ message: err.message });
-    }
-    next(err);
+	if (err.status) {
+			return res.status(err.status).json({ message: err.message });
+	}
+	next(err);
 });
 
 //  not sure of error 
