@@ -11,9 +11,17 @@ const client = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 const minutesToCompleteRegistration = '20';
 
-exports.sendSMS = (pinCode, phoneNumber) => {
-    const textBody = 'Your Spotlite Registration pin code is ' + pinCode + 
-    '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes';
+exports.sendSMS = (pinCode, phoneNumber, type) => {
+    type = type || 'PIN';
+
+    let textBoby;
+    if (type === 'PIN') {
+        textBody = 'Your Spotlite Registration pin code is ' + pinCode + 
+        '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes';
+    } else { // type = 'COMPLETE'
+        textBody = 'Registration completed, thank you.';
+    }
+
     client.messages
     .create({
         body: textBody,

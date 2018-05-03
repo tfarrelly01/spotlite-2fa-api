@@ -6,7 +6,6 @@ exports.postApplicant = (applicantId) => {
 			if (applicant === null) {
 				throw new Error('Applicant not found!');
 			} else {
-console.log('ID:::', applicantId);
 				return applicant.update({
 					Registered: 1
 				})

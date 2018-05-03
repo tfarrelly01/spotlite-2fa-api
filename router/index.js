@@ -24,7 +24,7 @@ console.log('Verification Code::', pinCode);
 				req.session.applicant.pinCode = pinCode;
 
 				// Send pin code via SMS
-				// sendSMS(pinCode, applicant.ContactPhone);
+				sendSMS(pinCode, applicant.ContactPhone, 'PIN');
 
 				// send back response object WITHOUT pin code
 				return res.status(200).json({applicant});
@@ -33,7 +33,7 @@ console.log('Verification Code::', pinCode);
 		.catch(err => {
 			let error;
 			err.message ? error = err.message : error = err; 
-			return res.json({error});
+			return res.status(404).json({error});
 		})
 });
 
@@ -50,8 +50,9 @@ router.get('/newpin', (req, res, next) => {
 	// user requests a new pin for whatever reason
 	let pinCode = getPinCode();
 
-	// TEXT PIN CODE HERE !!!
-	// sendSMS(pinCode, phoneNumber);
+console.log('Verification Code::', pinCode);
+	// Send pin code via SMS
+	sendSMS(pinCode, phoneNumber, 'PIN');
 	
 	req.session.applicant.pinCode = pinCode;
 
@@ -72,13 +73,13 @@ router.post('/verify', (req, res, next) => {
 			if (applicant instanceof Error) {
 				throw applicant;
 			} else {
-				// Do we send a success text via SMS if so need to refactor sendSMS function??
-				// sendSMS(pinCode, applicant.ContactPhone);
+				// Send Registration Complete message via SMS 
+				sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
 
 				return res.status(200).json({applicant});
 			}
 		})
-		.catch(error => res.json({Error}));
+		.catch(error => res.status(404).json({Error}));
 
 })
 
