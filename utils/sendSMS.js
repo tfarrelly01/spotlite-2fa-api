@@ -15,7 +15,7 @@ exports.sendSMS = (pinCode, phoneNumber, type) => {
     type = type || 'PIN';
 
     let textBoby;
-    if (type === 'PIN') {
+    if (type = 'PIN') {
         textBody = 'Your Spotlite Registration pin code is ' + pinCode + 
         '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes';
     } else { // type = 'COMPLETE'
@@ -28,7 +28,7 @@ exports.sendSMS = (pinCode, phoneNumber, type) => {
         from: TWILIO_NUMBER,
         to: phoneNumber
     })
-    .then(message => phoneNo)
+    .then(message => message.sid)
     .catch(err => err)
     .done();
 }
