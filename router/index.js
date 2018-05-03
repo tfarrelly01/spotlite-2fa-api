@@ -8,7 +8,7 @@ const {postApplicant} = require('../controllers/postApplicant');
 const {sendSMS} = require('../utils/sendSMS');
 
 router.post('/applicant', (req, res, next) => {
-	const {applicantEmail, phoneNumber} = req.body;
+	const {applicantEmail} = req.body;
 
 	getApplicant(applicantEmail)
 		.then(applicant => {
@@ -19,15 +19,12 @@ router.post('/applicant', (req, res, next) => {
 				let pinCode = getPinCode();
 console.log('Verification Code::', pinCode);
 
-				// store phone number in applicant response object
-				applicant.phoneNumber = phoneNumber;
-
 				// create session (applicant data including pin number)
 				req.session.applicant = {...applicant};
 				req.session.applicant.pinCode = pinCode;
 
 				// Send pin code via SMS
-				// sendSMS(pinCode, phoneNumber);
+				// sendSMS(pinCode, applicant.ContactPhone);
 
 				// send back response object WITHOUT pin code
 				return res.status(200).json({applicant});
@@ -64,19 +61,19 @@ router.get('/newpin', (req, res, next) => {
 router.post('/verify', (req, res, next) => {
 	// if verified then update applicant record (address, mobile phone and registered/verified = true)
 	// else throw error 
-	const options = req.body;
+	const {pinCode} = req.body;
 
-	if (req.session.applicant.pinCode != options.pinCode) {
+	if (req.session.applicant.pinCode != pinCode) {
 		return res.json({error: 'Verification code input does not match!'})
 	}
 
-	postApplicant(req.session.applicant.ApplicantId, options) 
+	postApplicant(req.session.applicant.Id) 
 		.then((applicant) => {
 			if (applicant instanceof Error) {
 				throw applicant;
 			} else {
-				// Do we send a success text via SMS??
-				// sendSMS(pinCode, phoneNumber);
+				// Do we send a success text via SMS if so need to refactor sendSMS function??
+				// sendSMS(pinCode, applicant.ContactPhone);
 
 				return res.status(200).json({applicant});
 			}
