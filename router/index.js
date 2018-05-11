@@ -2,10 +2,17 @@
 const express = require('express');
 const router  = express.Router();
 
+const path = require('path');
 const {getPinCode} = require('../controllers/getPinCode');
 const {getApplicant} = require('../controllers/getApplicant');
 const {postApplicant} = require('../controllers/postApplicant');
 const {sendSMS} = require('../utils/sendSMS');
+const libs = require('../libs/api');
+
+console.log('libs:', libs);
+
+// additional middleware
+libs.extendApp(router);
 
 router.post('/applicant', (req, res, next) => {
 	const {applicantEmail} = req.body;
@@ -24,22 +31,23 @@ console.log('Verification Code::', pinCode);
 				req.session.applicant.pinCode = pinCode;
 
 				// Send pin code via SMS
-				sendSMS(pinCode, applicant.ContactPhone, 'PIN');
+				// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
 
 				// send back response object WITHOUT pin code
-				return res.status(200).json({applicant});
+				res.api(null, applicant);
 			}
 		})
 		.catch(err => {
 			let error;
 			err.message ? error = err.message : error = err; 
-			return res.status(404).json({error});
+			res.api(error); 
 		})
 });
 
 router.use((req, res, next) => {
 	if (!req.session.applicant) {
-		res.json({error: 'Time to complete the registration process has expired. or has not started. Please click on the link in the registration email.'});
+		let error = 'Time to complete the registration process has expired. or has not started. Please click on the link in the registration email.';
+		res.api(error);
 	} else {
 		next();
 	}
@@ -56,7 +64,7 @@ console.log('Verification Code::', pinCode);
 	
 	req.session.applicant.pinCode = pinCode;
 
-	return res.status(200).json({message: 'New verification code generated'});
+	return res.api(null, {message: 'New verification code generated'});
 });
 
 router.post('/verify', (req, res, next) => {
@@ -65,7 +73,8 @@ router.post('/verify', (req, res, next) => {
 	const {pinCode} = req.body;
 
 	if (req.session.applicant.pinCode != pinCode) {
-		return res.json({error: 'Verification code input does not match!'})
+		let error = 'Verification code input does not match!';
+		return res.api(error);
 	}
 
 	postApplicant(req.session.applicant.Id) 
@@ -76,16 +85,19 @@ router.post('/verify', (req, res, next) => {
 				// Send Registration Complete message via SMS 
 				sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
 
-				return res.status(200).json({applicant});
+				return res.api(null, applicant);
 			}
 		})
-		.catch(error => res.status(404).json({Error}));
-
+		.catch(err => {
+			let error;
+			err.message ? error = err.message : error = err; 
+			res.api(error); 
+		})
 })
 
 router.get('/verified', (req, res, next) => {
 	delete req.session.applicant;
-	return res.status(200).json({message: 'Applicant verified!'});
+	return res.api(null, {message: 'Applicant verified!'});
 });
 
 module.exports = router;

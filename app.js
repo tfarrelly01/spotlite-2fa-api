@@ -46,12 +46,14 @@ app.listen(PORT, function() {
 });
 
 // sure of error
+/*
 app.use(function(err, req, res, next) {
 	if (err.status) {
 			return res.status(err.status).json({ message: err.message });
 	}
 	next(err);
 });
+*/
 
 //  not sure of error 
 app.use(function (err, req, res, next) {
