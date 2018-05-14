@@ -35,7 +35,7 @@ console.log('Verification Code::', pinCode);
 
 				// send back response object WITHOUT pin code
 
-				console.log('NEW SESSION:', req.session)
+console.log('NEW SESSION:', req.session)
 				res.api(null, applicant);
 			}
 		})
@@ -47,7 +47,7 @@ console.log('Verification Code::', pinCode);
 });
 
 router.use((req, res, next) => {
-	console.log('SESSION::', req.session);
+console.log('SESSION::', req.session);
 	if (req.session.applicant) {
 		next();
 	} else {
@@ -57,16 +57,14 @@ router.use((req, res, next) => {
 });
 
 router.get('/newpin', (req, res, next) => {
-	const {phoneNumber} = req.body;
 	// user requests a new pin for whatever reason
 	let pinCode = getPinCode();
 
 console.log('Verification Code::', pinCode);
 	// Send pin code via SMS
-	// sendSMS(pinCode, phoneNumber, 'PIN');
+	// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
 	
 	req.session.applicant.pinCode = pinCode;
-	console.log('SESSION::', req.session);
 
 	return res.api(null, {message: 'New verification code generated'});
 });
@@ -75,6 +73,7 @@ router.post('/verify', (req, res, next) => {
 	// if verified then update applicant record (address, mobile phone and registered/verified = true)
 	// else throw error 
 	const {pinCode} = req.body;
+console.log('pinCode:', pinCode);
 
 	if (req.session.applicant.pinCode != pinCode) {
 		let error = 'Verification code input does not match!';
@@ -87,7 +86,7 @@ router.post('/verify', (req, res, next) => {
 				throw applicant;
 			} else {
 				// Send Registration Complete message via SMS 
-				sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
+//				sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
 
 				return res.api(null, applicant);
 			}
