@@ -25,13 +25,17 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 // use cors so that front end application can access this api
-app.use(cors());
+app.use(cors({
+	origin: ['http://localhost:3000'],
+	credentials: true
+}));
 
 app.use(session({
 	secret: 'keyboard dog',
 	resave: true,
 	saveUninitialized: true,
-	truecookie: { maxAge: 20 * 60 * 1000 }
+	truecookie: { maxAge: 60 * 60 * 1000 },
+	cookie: {secure: false}
 })); 
 
 app.get('/', function(req, res) {

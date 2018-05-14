@@ -34,6 +34,8 @@ console.log('Verification Code::', pinCode);
 				// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
 
 				// send back response object WITHOUT pin code
+
+				console.log('NEW SESSION:', req.session)
 				res.api(null, applicant);
 			}
 		})
@@ -45,11 +47,12 @@ console.log('Verification Code::', pinCode);
 });
 
 router.use((req, res, next) => {
-	if (!req.session.applicant) {
+	console.log('SESSION::', req.session);
+	if (req.session.applicant) {
+		next();
+	} else {
 		let error = 'Time to complete the registration process has expired. or has not started. Please click on the link in the registration email.';
 		res.api(error);
-	} else {
-		next();
 	}
 });
 
@@ -60,9 +63,10 @@ router.get('/newpin', (req, res, next) => {
 
 console.log('Verification Code::', pinCode);
 	// Send pin code via SMS
-	sendSMS(pinCode, phoneNumber, 'PIN');
+	// sendSMS(pinCode, phoneNumber, 'PIN');
 	
 	req.session.applicant.pinCode = pinCode;
+	console.log('SESSION::', req.session);
 
 	return res.api(null, {message: 'New verification code generated'});
 });
