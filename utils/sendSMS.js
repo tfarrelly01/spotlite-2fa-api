@@ -16,7 +16,7 @@ exports.sendSMS = (pinCode, phoneNumber, type) => {
 
     let textBoby;
     if (type = 'PIN') {
-        textBody = 'Your Spotlite Registration pin code is ' + pinCode + 
+        textBody = 'Your Registration pin code is ' + pinCode + 
         '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes';
     } else { // type = 'COMPLETE'
         textBody = 'Registration completed, thank you.';

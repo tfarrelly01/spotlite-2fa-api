@@ -32,6 +32,12 @@ console.log('Verification Code::', pinCode);
 
 				// Send pin code via SMS
 				// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
+				// .then(messageSid => messageSid)
+				// .catch(err => err)
+
+				// An error here will be because the app was unable to send a pin code to the applicants
+				// mobile phone. Need to send back an appropriate error message to the front end application
+				// requesting the applicant to try again.
 
 				// send back response object WITHOUT pin code
 
@@ -62,7 +68,14 @@ router.get('/newpin', (req, res, next) => {
 
 console.log('Verification Code::', pinCode);
 	// Send pin code via SMS
+
 	// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
+	// .then(messageSid => messageSid)
+	// .catch(err => err)
+
+	// An error here will be because the app was unable to re-send a pin code to the applicants
+	// mobile phone. Need to send back an appropriate error message to the front end application
+	// requesting the applicant to try again.
 	
 	req.session.applicant.pinCode = pinCode;
 
@@ -86,7 +99,13 @@ console.log('pinCode:', pinCode);
 				throw applicant;
 			} else {
 				// Send Registration Complete message via SMS 
-//				sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
+				// sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
+				// .then(messageSid => messageSid)
+				// .catch(err => err)
+
+				// An error here will be because the app was unable to send an SMS to the applicant informing
+				// them that the registration process has completed successfully. Don't really need to send  
+				// an error message to the front end application which also informs the applicant of successful completion.
 
 				return res.api(null, applicant);
 			}
