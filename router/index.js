@@ -66,7 +66,7 @@ router.get('/newpin', (req, res, next) => {
 	// user requests a new pin for whatever reason
 	let pinCode = getPinCode();
 
-console.log('Verification Code::', pinCode);
+console.log('/newpin pin code::', pinCode);
 	// Send pin code via SMS
 
 	// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
@@ -86,14 +86,14 @@ router.post('/verify', (req, res, next) => {
 	// if verified then update applicant record (address, mobile phone and registered/verified = true)
 	// else throw error 
 	const {pinCode} = req.body;
-console.log('pinCode:', pinCode);
+console.log('/verify pin code::', pinCode);
 
 	if (req.session.applicant.pinCode != pinCode) {
 		let error = 'Verification code input does not match!';
 		return res.api(error);
 	}
 
-	postApplicant(req.session.applicant.Id) 
+	postApplicant(req.session.applicant) 
 		.then((applicant) => {
 			if (applicant instanceof Error) {
 				throw applicant;
