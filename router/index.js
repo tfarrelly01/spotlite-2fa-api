@@ -31,9 +31,9 @@ console.log('Verification Code::', pinCode);
 				req.session.applicant.pinCode = pinCode;
 
 				// Send pin code via SMS
-				// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
-				// .then(messageSid => messageSid)
-				// .catch(err => err)
+				 sendSMS(pinCode, applicant.ContactPhone, 'PIN')
+				 // .then(messageSid => messageSid)
+				 // .catch(err => err)
 
 				// An error here will be because the app was unable to send a pin code to the applicants
 				// mobile phone. Need to send back an appropriate error message to the front end application
@@ -69,9 +69,9 @@ router.get('/newpin', (req, res, next) => {
 console.log('/newpin pin code::', pinCode);
 	// Send pin code via SMS
 
-	// sendSMS(pinCode, applicant.ContactPhone, 'PIN');
-	// .then(messageSid => messageSid)
-	// .catch(err => err)
+	 sendSMS(pinCode, req.session.applicant.ContactPhone, 'PIN')
+	 // .then(messageSid => messageSid)
+	 // .catch(err => err)
 
 	// An error here will be because the app was unable to re-send a pin code to the applicants
 	// mobile phone. Need to send back an appropriate error message to the front end application
@@ -85,21 +85,22 @@ console.log('/newpin pin code::', pinCode);
 router.post('/verify', (req, res, next) => {
 	// if verified then update applicant record (address, mobile phone and registered/verified = true)
 	// else throw error 
-	const {pinCode} = req.body;
-console.log('/verify pin code::', pinCode);
+	const applicantData = req.body;
 
-	if (req.session.applicant.pinCode != pinCode) {
+console.log('/verify ::', applicantData);
+
+	if (req.session.applicant.pinCode != applicantData.pinCode) {
 		let error = 'Verification code input does not match!';
 		return res.api(error);
 	}
 
-	postApplicant(req.session.applicant) 
+	postApplicant(req.session.applicant.Id, applicantData) 
 		.then((applicant) => {
 			if (applicant instanceof Error) {
 				throw applicant;
 			} else {
 				// Send Registration Complete message via SMS 
-				// sendSMS(pinCode, applicant.ContactPhone, 'COMPLETE');
+				sendSMS(applicantData.pinCode, applicantData.ContactPhone, 'COMPLETE')
 				// .then(messageSid => messageSid)
 				// .catch(err => err)
 

@@ -15,7 +15,7 @@ exports.sendSMS = (pinCode, phoneNumber, type) => {
     type = type || 'PIN';
 
     let textBoby;
-    if (type = 'PIN') {
+    if (type === 'PIN') {
         textBody = 'Your Registration pin code is ' + pinCode + 
         '. Your pin code is valid for ' + minutesToCompleteRegistration + ' minutes';
     } else { // type = 'COMPLETE'

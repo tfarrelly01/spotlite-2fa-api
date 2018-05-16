@@ -1,7 +1,7 @@
 const Applicant = require('../models/Applicant');
 
-exports.postApplicant = (applicantData) => {
-	return Applicant.findOne( {where: {Id: applicantData.Id}})
+exports.postApplicant = (applicantId, applicantData) => {
+	return Applicant.findOne( {where: {Id: applicantId}})
 		.then((applicant) => {
 			if (applicant === null) {
 				throw new Error('Applicant not found!');
@@ -9,13 +9,13 @@ exports.postApplicant = (applicantData) => {
 				return applicant.update({
 					ContactSurname: applicantData.ContactSurname,
 					ContactMiddleName: applicantData.ContactMiddleName,
-					ContactForename: applicantData.Contact.Forename,
-					ContactAddrCountryId: applicantData.ContactAddrCountryId,
+					ContactForename: applicantData.ContactForename,
+//					ContactAddrCountryId: applicantData.ContactAddrCountryId,
 					ContactEmail: applicantData.ContactEmail,
 					ContactPhone: applicantData.ContactPhone,
-					ContactAddrLine1: applicantData.ContactAddr1,
-					ContactAddrLine2: applicantData.ContactAddr2,
-					ContactAddrLine3: applicantData.ContactAddr3,
+					ContactAddr1: applicantData.ContactAddr1,
+					ContactAddr2: applicantData.ContactAddr2,
+					ContactAddr3: applicantData.ContactAddr3,
 					ContactCity: applicantData.ContactCity,
 					ContactState: applicantData.ContactState,
 					ContactPostCode: applicantData.ContactPostCode,
